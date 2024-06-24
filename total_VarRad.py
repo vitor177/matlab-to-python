@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def total_VarRad(raw_rad, dia_juliano_ref, latitude, longitude, longitude_ref, isc, horalocal_ref, nome_arquivo):
+def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: float, longitude_ref, isc, horalocal_ref, nome_arquivo):
     dados = pd.DataFrame()
 
     dados['Hora'] = raw_rad[0]
@@ -32,14 +32,14 @@ def total_VarRad(raw_rad, dia_juliano_ref, latitude, longitude, longitude_ref, i
             cont +=1
             dia_juliano[i] = int(dia_juliano_ref + cont)
             cont1 = 1
-    dados['Dia Juliano'] = dia_juliano
+    dados['Dia Juliano'] = dia_juliano.astype(int)
 
 
         # MES
     dia_mes = np.zeros(len((raw_rad)))
     for i in range(len(raw_rad)):
         dia_mes[i] = dia_juliano[i] - dia_juliano_ref + 1
-    dados['Mês'] = dia_mes
+    dados['Mês'] = dia_mes.astype(int)
 # %%
     dados['Latitude'] = latitude
 
