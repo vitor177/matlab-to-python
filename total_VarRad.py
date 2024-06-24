@@ -93,14 +93,14 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
 
     # Ioh
     Ioh = isc * Eo * cosAZS
-    dados['Ioh W/m^2'] = Ioh
+    dados['Ioh W/m²'] = Ioh
 
     # Io
     Io = isc * Eo
-    dados['Io W/m^2'] = Io
+    dados['Io W/m²'] = Io
 
     Iox = np.where(Io < 0, 0, Io)
-    dados['Iox W/m^2'] = Iox     
+    dados['Iox W/m²'] = Iox     
 
     return dados
 
