@@ -8,18 +8,10 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
 
     dados['Hora'] = raw_rad[0]
 
-# RN, Nome_Arquivo, ano, mes, dia_juliano_ref, dia_final, latitude, longitude, temp_min, temp_max, prec_max
-
-# Dados = RAW_RAD, dia_juliano_ref, latitude, longitude_ref, isc, horalocal_ref, nome_arquivo
-
 # %%
      # HORA LOCAL
     dados['Hora Local'] = list(range(1440))*(int((len(raw_rad)/1440)))
 # %%
-
-
-
-
     # DIA JULIANO
     cont = 0
     cont1 = 0
@@ -33,7 +25,6 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
             dia_juliano[i] = int(dia_juliano_ref + cont)
             cont1 = 1
     dados['Dia Juliano'] = dia_juliano.astype(int)
-
 
         # MES
     dia_mes = np.zeros(len((raw_rad)))
@@ -77,11 +68,11 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
 
     # CosAZS12
     cosAZS12 = np.where(AZS > 90, 0, cosAZS**1.2)
-    dados['cosAZS^1,2'] = cosAZS12
+    dados['cos(AZS^(1.2))'] = cosAZS12
 
     # CosAZS02
     cosAZS02 = np.where(AZS > 90, 0, cosAZS**0.2)
-    dados['cosAZS^0,2'] = cosAZS02
+    dados['cos(AZS^(0.2))'] = cosAZS02
 
     # Alpha
     alpha = np.arcsin(cosAZS) * 180 / np.pi
@@ -99,8 +90,11 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
     Io = isc * Eo
     dados['Io W/m²'] = Io
 
+    # Iox
     Iox = np.where(Io < 0, 0, Io)
-    dados['Iox W/m²'] = Iox     
+    dados['Iox W/m²'] = Iox
+
+    dados.to_excel(nome_arquivo+'_VarRAD.xlsx', engine='xlsxwriter', index=False)     
 
     return dados
 
