@@ -6,7 +6,7 @@ import numpy as np
 def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: float, longitude_ref, isc, horalocal_ref, nome_arquivo):
     dados = pd.DataFrame()
 
-    dados['Hora'] = raw_rad[0]
+    dados['Hora'] = raw_rad.iloc[:, 0]
 
 # %%
      # HORA LOCAL
@@ -36,9 +36,9 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
 
     dados['Longitude'] = longitude
 
-    dados['Lon red'] = longitude_ref
+    dados['Lon ref'] = longitude_ref
 
-
+    dados['Isc'] = isc
     # %%
     declinacao = 23.45*(np.sin(((dia_juliano+284)*(360/365))*np.pi/180))
     dados['Declinação'] = declinacao
@@ -97,7 +97,3 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
     dados.to_excel(nome_arquivo+'_VarRAD.xlsx', engine='xlsxwriter', index=False)     
 
     return dados
-
-# %%
-
-# %%

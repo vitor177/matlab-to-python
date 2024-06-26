@@ -11,7 +11,7 @@ raw_rad = pd.read_excel('data/RN01-2024-05.xlsx', skiprows=3)
 print(raw_rad.head())
 
 #df1 = raw_rad[raw_rad.isnull().any(axis=1)]
-# %%
+# %%,
 print(raw_rad.isnull().sum().sum())
 # %%
 print(raw_rad.columns[2:])

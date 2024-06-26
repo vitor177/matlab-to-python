@@ -27,7 +27,7 @@ def list_dat_files(directory):
 
 def merge_dat_files(directory, output_file):
     """
-    Mescla todos os arquivos .dat em um diretório em um único arquivo.
+    Mescla todos os arquivos .dat de um diretório em um único arquivo.
     
     :param directory: Caminho para o diretório contendo os arquivos .dat
     :param output_file: Caminho para o arquivo de saída
@@ -71,3 +71,5 @@ if __name__ == "__main__":
 
     # Mesclar arquivos
     merge_dat_files(directory, output_file)
+
+
