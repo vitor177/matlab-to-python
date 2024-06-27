@@ -10,7 +10,9 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
 
 # %%
      # HORA LOCAL
-    dados['Hora Local'] = list(range(1440))*(int((len(raw_rad)/1440)))
+    horalocal = list(range(1440))*(int((len(raw_rad)/1440)))
+
+    dados['Hora Local'] = horalocal
 # %%
     # DIA JULIANO
     cont = 0
@@ -54,7 +56,7 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
     dados['Et'] = et   
 
     # Horasolar
-    horasolar = (horalocal_ref + ((4 * (longitude - longitude_ref)) + et)) / 60
+    horasolar = (horalocal + ((4 * (longitude - longitude_ref)) + et)) / 60
     dados['Hora solar'] = horasolar
 
     # Omega

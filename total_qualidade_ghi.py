@@ -2,23 +2,13 @@
 import numpy as np
 import pandas as pd
 
-def total_qualidade_ghi(raw, rawx, dados, header, mes, dia_final, anoX, nome_arquivo, titulo='Global Horizontal Irradiance', nome_var='GHI', var=16, fig=1):
 
-
-    mes = 2
-    return mes
 arquivo = 'data/RN01-2024-05.xlsx'
 raw_rad = pd.read_excel(arquivo, skiprows=1444, header=None)
 
 raw_met = pd.read_excel(arquivo, skiprows=3)
 
 dados = pd.read_excel('RN01-2024-05_VarRAD.xlsx')
-
-# %%
-print(raw_met.head())
-
-# %%
-print(raw_met.columns)
 # %%
 var = 16
 ghi_avg = raw_rad.iloc[:,var-1]
@@ -45,8 +35,6 @@ alpha = dados.iloc[:,17]
 ioh = dados.iloc[:,19]
 iox = dados.iloc[:,21]
 
-
-
 # %%
 flag6 = 60000
 flag5 = 50000
@@ -55,8 +43,12 @@ flag3 = 30000
 flag2 = 20000
 flag1 = 10000
 
-kt = ghi_avg/ioh
 
+m = pd.DataFrame()
+
+kt = np.divide(ghi_avg,ioh)
+
+print(type(kt))
 for i in range(n):
     if ioh[i] == flag6:
         kt[i] = np.nan
@@ -65,7 +57,16 @@ for i in range(n):
             kt[i] = 0
         if kt[i] < 0:
             kt[i] = 0
-print(kt)
+
+m['Data'] = raw_rad.iloc[:, 0]
+m['GHI AVG'] = ghi_avg
+m['Ioh'] = ioh
+m['Kt'] = kt
+
+m.to_excel('_CQD_GHI.xlsx', engine='xlsxwriter', index=False)  
+
+
+
 
 # %%
 kt_ceu = np.zeros(n)
@@ -79,7 +80,7 @@ for i in range(n):
         kt_ceu[i] = 3
     else:
         kt_ceu[i] = np.nan
-print(kt_ceu)
+m['Kt Céu'] = kt_ceu
 # %%
 
 ioh = np.maximum(ioh, 0)
@@ -94,5 +95,5 @@ for i in range(n):
             over_irradiance[i] = ghi_avg[i]
             cont_over_irradiance+=1
             
-
+over_irradiance_1000 = np.nan(n)
 

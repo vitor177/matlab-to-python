@@ -46,9 +46,7 @@ def total_dados_entrada(Arquivo: str):
         temp_min = None
         temp_max = None
         prec_max = None
-    print("Latitude: ", latitude)
 
-    print("Longitude: ",longitude)
     return RN, nome_arquivo, ano, mes, dia_juliano_ref, dia_final, latitude, longitude, temp_min, temp_max, prec_max
 
 
