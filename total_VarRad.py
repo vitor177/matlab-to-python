@@ -24,13 +24,15 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
             cont +=1
             dia_juliano[i] = int(dia_juliano_ref + cont)
             cont1 = 1
-    dados['Dia Juliano'] = dia_juliano.astype(int)
 
         # MES
     dia_mes = np.zeros(len((raw_rad)))
     for i in range(len(raw_rad)):
         dia_mes[i] = dia_juliano[i] - dia_juliano_ref + 1
+
     dados['Mês'] = dia_mes.astype(int)
+    dados['Dia Juliano'] = dia_juliano.astype(int)
+
 # %%
     dados['Latitude'] = latitude
 
@@ -48,7 +50,7 @@ def total_VarRad(raw_rad, dia_juliano_ref: int, latitude: float, longitude: floa
     dados['RAD(rad)'] = rad
 
     # %%
-    et = 229.18 * (0.000075 + 0.001868 * np.cos(rad) - 0.032077 * np.sin(rad) - 0.014615 * np.cos(2 * rad) - 0.04089 * np.sin(2 * rad))
+    et = 229.18 * (0.000075 + 0.001868 * np.cos(rad) - 0.032077 * np.sin(rad * (-0.014615) * np.cos(2*rad) - 0.04089 * np.sin(2 * rad)))
     dados['Et'] = et   
 
     # Horasolar
