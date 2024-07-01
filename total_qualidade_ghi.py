@@ -654,15 +654,19 @@ ghi_avg_med = np.full((24), np.nan)
 # %%
 print(n1)
 # %%
-ghi_avg_horax = ghi_avg_hora[:n1] * matxx_dia
+ghi_avg_horax = ghi_avg_hora[:n1, np.newaxis].T * matxx_dia
 
+# %%
+ghi_avg_horax.shape
+# %%
 
 for i in range(24):
     ghi_avg_med[i] = np.nanmean(ghi_avg_horax[:, i])
 
 
 # %%
-
+print(ghi_avg_med.shape)
+# %%
 # ======= GHI max Hora =======
 ghi_max_med = np.full((24, 1), np.nan)
 ghi_max_horax = ghi_max_hora * matxx_dia 
