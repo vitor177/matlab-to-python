@@ -17,8 +17,11 @@ ghi_min = raw_rad.iloc[:,var+1]
 ghi_std = raw_rad.iloc[:,var+2]
 ghi_mcc_clear = raw_rad.iloc[:, var+5]
 
-ghi_avg_p = raw_rad[var+5]
+start_row = 1440-20
+ghi_avg_p = raw_met.iloc[start_row:,var-1]
 
+# %%
+print(ghi_avg_p.head)
 
 
 # vou voltar aqui mais tarde, provavelmente previous pegar 20 amostras antes até o final
@@ -266,10 +269,9 @@ m['0<kt<1,2 GHI'] = zero_kt_12
 # FP min
 
 fpmin = -4
-
 fpmax = (1.5 * iox * cosAZS12) + 100
 
-fp_ghi = np.full(n, np.nan)
+fp_ghi = pd.Series(np.full(n, np.nan))
 fp_ghi_flag6 = 0
 fp_ghi_flag5 = 0
 fp_ghi_flag4 = 0
@@ -383,6 +385,298 @@ for i in range(n):
             ghi_clear_sky[i] = flag1
             ghi_clear_sky_flag1 += 1
 m['Clear sky GHI'] = ghi_clear_sky
-m.to_excel('_CQD_GHI.xlsx', engine='xlsxwriter', index=False)   
 # %%
 # Consistência Temporal GHI
+
+cons_temp_ghi = pd.Series(np.full(n, np.nan))
+
+cons_temp_ghi_flag6 = 0
+cons_temp_ghi_flag5 = 0
+cons_temp_ghi_flag4 = 0
+cons_temp_ghi_flag3 = 0
+cons_temp_ghi_flag2 = 0
+cons_temp_ghi_flag1 = 0
+
+for i in range(n):
+    if ghi_clear_sky[i] == flag6:
+        cons_temp_ghi[i] = flag6
+        cons_temp_ghi_flag6 += 1
+    elif ghi_clear_sky[i] == flag5:
+        cons_temp_ghi[i] = flag5
+        cons_temp_ghi_flag5 += 1
+    elif ghi_clear_sky[i] == flag4 or ghi_clear_sky[i] == flag3:
+        cons_temp_ghi[i] = flag4
+        cons_temp_ghi_flag4 += 1
+    elif ghi_clear_sky[i] == flag2:
+        cons_temp_ghi[i] = flag2
+        cons_temp_ghi_flag2 += 1
+    else:
+        if i == n - 1:
+            cons_temp_ghi[i] = cons_temp_ghi[i - 1]
+        else:
+            ghi_diff = abs(ghi_avg[i] - ghi_avg[i + 1])
+            if 800 < ghi_diff <= 1000:
+                cons_temp_ghi[i] = flag2
+                cons_temp_ghi_flag2 += 1
+            elif ghi_diff > 1000:
+                cons_temp_ghi[i] = flag3
+                cons_temp_ghi_flag3 += 1
+            else:
+                cons_temp_ghi[i] = flag1
+                cons_temp_ghi_flag1 += 1
+
+m['Consistência temporal GHI'] = cons_temp_ghi
+# %%
+# Persistência GHI
+persistencia_ghi = pd.Series(np.full(n, np.nan))
+
+persistencia_ghi_flag6 = 0
+persistencia_ghi_flag5 = 0
+persistencia_ghi_flag4 = 0
+persistencia_ghi_flag3 = 0
+persistencia_ghi_flag2 = 0
+persistencia_ghi_flag1 = 0
+
+for i in range(n):
+    if cons_temp_ghi[i] == flag6:
+        persistencia_ghi[i] = flag6
+        persistencia_ghi_flag6 += 1
+    elif cons_temp_ghi[i] == flag5 and elevacao7[i] == flag5:
+        persistencia_ghi[i] = flag5
+        persistencia_ghi_flag5 += 1
+    elif cons_temp_ghi[i] == flag4 or cons_temp_ghi[i] == flag3:
+        persistencia_ghi[i] = flag4
+        persistencia_ghi_flag4 += 1
+    elif cons_temp_ghi[i] == flag2:
+        persistencia_ghi[i] = flag2
+        persistencia_ghi_flag2 += 1
+    else:
+        if i + 20 < len(ghi_avg_p):
+            if abs(max(ghi_avg_p[i:i+20]) - min(ghi_avg_p[i:i+20])) != 0:
+                persistencia_ghi[i] = flag1
+                persistencia_ghi_flag1 += 1
+            else:
+                persistencia_ghi[i] = flag3
+                persistencia_ghi_flag3 += 1
+m['Persistência GHI'] = persistencia_ghi
+# %%
+
+# %%
+# Resultado GHI
+
+resultado_ghi = pd.Series(np.full(n, np.nan))
+resultado_ghi_flag6 = 0
+resultado_ghi_flag5 = 0
+resultado_ghi_flag3 = 0
+resultado_ghi_flag2 = 0
+resultado_ghi_flag1 = 0
+
+for i in range(n):
+    if persistencia_ghi[i] == flag6:
+        resultado_ghi[i] = flag6
+        resultado_ghi_flag6 += 1
+    elif persistencia_ghi[i] == flag5:
+        resultado_ghi[i] = flag5
+        resultado_ghi_flag5 += 1
+    elif persistencia_ghi[i] == flag4 or persistencia_ghi[i] == flag3:
+        resultado_ghi[i] = flag3
+        resultado_ghi_flag3 += 1
+    elif persistencia_ghi[i] == flag2:
+        resultado_ghi[i] = flag2
+        resultado_ghi_flag2 += 1
+    else:
+        resultado_ghi[i] = flag1
+        resultado_ghi_flag1 += 1
+
+m['Resultado GHI'] = resultado_ghi
+# %%
+# %%
+# Cálculo do Potencial
+ghi_avg_min = pd.Series(np.full(n, np.nan))
+for i in range(n):
+    if resultado_ghi[i] != flag6 and resultado_ghi[i] != flag3:
+        ghi_avg_min[i] = ghi_avg[i]
+
+# ======= GHI max min =======
+ghi_max_min = pd.Series(np.full(n, np.nan))
+for i in range(n):
+    if resultado_ghi[i] != flag6 and resultado_ghi[i] != flag3:
+        ghi_max_min[i] = ghi_max[i]
+
+# ======= GHI min min =======
+ghi_min_min = pd.Series(np.full(n, np.nan))
+for i in range(n):
+    if resultado_ghi[i] != flag6 and resultado_ghi[i] != flag3:
+        ghi_min_min[i] = ghi_min[i]
+
+m['GHI avg min'] = ghi_avg_min
+m['GHI max min'] = ghi_max_min
+m['GHI min min'] = ghi_min_min
+
+
+# %%
+
+# CORRIGIR 
+# HORA
+
+# ======= Dia =======
+max_dia = max(dia_mes)
+n1 = max_dia * 24
+dia = pd.Series(np.full(n, np.nan))
+aux = 0
+cont = 0
+
+for i in range(n):
+    if horalocal[i] == 0:
+        if cont < 60:
+            dia[aux] = dia_mes[i]
+            aux += 1
+            cont += 1
+    else:
+        cont = 0
+
+# %%
+# ======= Hora =======
+hora = pd.Series(np.full(n, np.nan))
+cont = 0
+
+for i in range(n1):
+    if cont < 60:
+        hora[i] = cont
+        cont += 1
+    else:
+        cont = 0
+        hora[i] = cont
+        cont += 1
+
+horay = pd.Series(np.full(n, np.nan))
+cont = 0
+
+for i in range(n1):
+    if cont < 24:
+        horay[i] = cont
+        cont += 1
+    else:
+        cont = 0
+        horay[i] = cont
+        cont += 1
+
+m['Hora'] = horay
+
+# %%
+
+# ======= GHI avg Hora =======
+ghi_avg_hora = np.zeros((n))
+aux = 0
+auxx = 60
+
+for i in range(n):
+    if i < n1 and auxx < n:
+        ghi_avg_hora[i] = np.nanmean(ghi_avg_min[aux:auxx])
+        aux = auxx + 1
+        auxx = auxx + 60
+    else:
+        ghi_avg_hora[i] = np.nan
+print(n1)
+
+
+m['GHI avg Hora'] = ghi_avg_hora
+# %%
+# ======= GHI min Hora =======
+ghi_min_hora = np.zeros((n))
+aux = 0
+auxx = 60
+
+for i in range(n):
+    if i < n1 and auxx < n:
+        ghi_min_hora[i] = np.nanmean(ghi_min_min[aux:auxx])
+        aux = auxx + 1
+        auxx = auxx + 60
+    else:
+        ghi_avg_hora[i] = np.nan
+
+m['GHI min Hora'] = ghi_min_hora
+# %%
+# ======= GHI max Hora =======
+ghi_max_hora = np.zeros((n))
+aux = 0
+auxx = 60
+
+for i in range(n):
+    if i < n1 and auxx < n:
+        ghi_max_hora[i] = np.nanmean(ghi_max_min[aux:auxx])
+        aux = auxx + 1
+        auxx = auxx + 60
+    else:
+        ghi_avg_hora[i] = np.nan
+m['GHI max Hora'] = ghi_max_hora
+
+# %%
+# ======= GHI clear sky =======
+ghi_clear_hora = np.zeros((n1))
+aux = 0
+auxx = 60
+
+for i in range(n1):
+    if auxx < n:
+        ghi_clear_hora[i] = np.nanmean(ghi_mcc_clear[aux:auxx])
+        aux = auxx + 1
+        auxx = auxx + 60
+
+# ======= Horax =======
+horax = np.zeros(24)
+for i in range(len(horax)):
+    horax[i] = i
+
+m.to_excel('_CQD_GHI.xlsx', engine='xlsxwriter', index=False)   
+
+# %%
+
+# ======= Matriz auxiliar =======
+matx_dia = np.full((24, 24), np.nan)
+for i in range(24):
+    matx_dia[i, i] = 1  # atribui 1 na diagonal principal
+
+matxx_dia = np.full((max_dia * 24, 24), np.nan)
+aux = 0
+auxx = 24
+for i in range(max_dia):
+    matxx_dia[aux:auxx, :] = matx_dia
+    aux += 24
+    auxx += 24
+
+
+# %%
+
+# ======= GHI avg Hora =======
+ghi_avg_med = np.full((24), np.nan)
+
+# %%
+print(n1)
+# %%
+ghi_avg_horax = ghi_avg_hora[:n1] * matxx_dia
+
+
+for i in range(24):
+    ghi_avg_med[i] = np.nanmean(ghi_avg_horax[:, i])
+
+
+# %%
+
+# ======= GHI max Hora =======
+ghi_max_med = np.full((24, 1), np.nan)
+ghi_max_horax = ghi_max_hora * matxx_dia 
+for i in range(24):
+    ghi_max_med[i] = np.nanmean(ghi_max_horax[:, i])
+
+# ======= GHI min Hora =======
+ghi_min_med = np.full((24, 1), np.nan)
+ghi_min_horax = ghi_min_hora * matxx_dia
+for i in range(24):
+    ghi_min_med[i] = np.nanmean(ghi_min_horax[:, i])
+
+# ======= GHI sky Hora =======
+GHI_clear_med = np.full((24, 1), np.nan)
+ghi_clear_horax = ghi_clear_hora * matxx_dia
+for i in range(24):
+    GHI_clear_med[i] = np.nanmean(ghi_clear_horax[:, i])
