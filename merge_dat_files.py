@@ -5,10 +5,6 @@ import os
 def read_dat_file(filepath, offset=4):
     """
     Lê um arquivo .dat e retorna o cabeçalho e os dados.
-    
-    :param filepath: Caminho para o arquivo .dat
-    :param offset: Número de linhas do cabeçalho
-    :return: Tuple contendo o cabeçalho e os dados
     """
     with open(filepath, 'r', encoding='utf-8') as file:
         lines = file.readlines()
@@ -18,19 +14,13 @@ def read_dat_file(filepath, offset=4):
 
 def list_dat_files(directory):
     """
-    Lista todos os arquivos .dat e .backup em um diretório.
-    
-    :param directory: Caminho para o diretório
-    :return: Lista de arquivos .dat e .backup
+    Lista todos os arquivos .dat e .backup em um diretório
     """
     return [f for f in os.listdir(directory) if f.endswith('.dat') or f.endswith('.backup')]
 
 def merge_dat_files(directory, output_file):
     """
     Mescla todos os arquivos .dat de um diretório em um único arquivo.
-    
-    :param directory: Caminho para o diretório contendo os arquivos .dat
-    :param output_file: Caminho para o arquivo de saída
     """
     dat_files = list_dat_files(directory)
 
