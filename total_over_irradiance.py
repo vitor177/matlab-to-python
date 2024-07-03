@@ -22,7 +22,7 @@ data = raw_rad.iloc[:, 0]
 data1 = pd.to_datetime(data, format='%d/%m/%Y %H:%M:%S')
 
 ghi_avg = pd.to_numeric(raw_rad.iloc[:, col])
-ghi_max = pd.to_numeric(raw_rad.iloc[:, col+1])  # GHI 1 max
+ghi_max = pd.to_numeric(raw_rad.iloc[:, col])  # GHI 1 max
 
 vel_avg = pd.to_numeric(raw_rad.iloc[:, 3])
 temp_avg = pd.to_numeric(raw_rad.iloc[:, 7])
@@ -46,8 +46,8 @@ dia_mes = dados.iloc[:, 2]
 cosazs = dados.iloc[:, 13]
 cosazs12 = dados.iloc[:, 15]
 alpha = dados.iloc[:, 17]
-ioh = dados.iloc[:, 19]
-iox = dados.iloc[:, 21]
+ioh = pd.to_numeric(dados.iloc[:, 19])
+iox = pd.to_numeric(dados.iloc[:, 21])
 
 ioh[ioh < 0] = 0
 
@@ -87,10 +87,8 @@ for i in range(n):
     if ghi_max[i] >= ioh[i] and ghi_max[i] >= 1000:
         over_irradiance_plot[i] = ghi_max[i]
 
+
 # %%
-irradiancios = over_irradiance[~np.isnan(over_irradiance)]
-maiores_q_1000 = irradiancios[(irradiancios > 1000) & (irradiancios < 1367)]
-print(len(maiores_q_1000))
 # %%
 
 k = 0
@@ -182,12 +180,7 @@ evento_auxxx = np.full(n, np.nan)
 energia_clear_sky_1000 = np.full(n, np.nan)
 j = 1
 
-# %%
-temp_over_1000_auxx[temp_over_1000_auxx>0]
-# %%
-
 for i in range(n):
-    print("VALOR:", temp_over_1000_auxx)
     if 0 < temp_over_1000_auxx[i] <= 1:
         cont_1000_1 += 1
         for k in range(int(temp_over_1000_auxx[i])):
@@ -196,69 +189,68 @@ for i in range(n):
             energia_clear_sky_1000[k] = clear_sky[i-k]
         resumo_evento_data_1000[j-1] = data[i]
         resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
-        print(resumo_evento_1000[j-1, 0])
         resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
         resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
         resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
         resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
         evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
         j += 1
-    # if 1 < temp_over_1000_auxx[i] <= 2:
-    #     cont_1000_2 += 1
-    #     for k in range(int(temp_over_1000_auxx[i])):
-    #         valor_1000_2[i-k] = over_irradiance_1000[i-k]
-    #         evento_auxxx[k] = over_irradiance_1000[i-k]
-    #         energia_clear_sky_1000[k] = clear_sky[i-k]
-    #     resumo_evento_data_1000[j-1] = data[i]
-    #     resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
-    #     resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
-    #     resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
-    #     resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
-    #     resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
-    #     evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
-    #     j += 1
-    # if 2 < temp_over_1000_auxx[i] <= 3:
-    #     cont_1000_3 += 1
-    #     for k in range(int(temp_over_1000_auxx[i])):
-    #         valor_1000_3[i-k] = over_irradiance_1000[i-k]
-    #         evento_auxxx[k] = over_irradiance_1000[i-k]
-    #         energia_clear_sky_1000[k] = clear_sky[i-k]
-    #     resumo_evento_data_1000[j-1] = data[i]
-    #     resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
-    #     resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
-    #     resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
-    #     resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
-    #     resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
-    #     evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
-    #     j += 1
-    # if 3 < temp_over_1000_auxx[i] <= 4:
-    #     cont_1000_4 += 1
-    #     for k in range(int(temp_over_1000_auxx[i])):
-    #         valor_1000_4[i-k] = over_irradiance_1000[i-k]
-    #         evento_auxxx[k] = over_irradiance_1000[i-k]
-    #         energia_clear_sky_1000[k] = clear_sky[i-k]
-    #     resumo_evento_data_1000[j-1] = data[i]
-    #     resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
-    #     resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
-    #     resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
-    #     resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
-    #     resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
-    #     evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
-    #     j += 1
-    # if 4 < temp_over_1000_auxx[i]:
-    #     cont_1000_5 += 1
-    #     for k in range(int(temp_over_1000_auxx[i])):
-    #         valor_1000_5[i-k] = over_irradiance_1000[i-k]
-    #         evento_auxxx[k] = over_irradiance_1000[i-k]
-    #         energia_clear_sky_1000[k] = clear_sky[i-k]
-    #     resumo_evento_data_1000[j-1] = data[i]
-    #     resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
-    #     resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
-    #     resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
-    #     resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
-    #     resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
-    #     evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
-    #     j += 1
+    if 1 < temp_over_1000_auxx[i] <= 2:
+        cont_1000_2 += 1
+        for k in range(int(temp_over_1000_auxx[i])):
+            valor_1000_2[i-k] = over_irradiance_1000[i-k]
+            evento_auxxx[k] = over_irradiance_1000[i-k]
+            energia_clear_sky_1000[k] = clear_sky[i-k]
+        resumo_evento_data_1000[j-1] = data[i]
+        resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
+        resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
+        resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
+        resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
+        resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
+        evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
+        j += 1
+    if 2 < temp_over_1000_auxx[i] <= 3:
+        cont_1000_3 += 1
+        for k in range(int(temp_over_1000_auxx[i])):
+            valor_1000_3[i-k] = over_irradiance_1000[i-k]
+            evento_auxxx[k] = over_irradiance_1000[i-k]
+            energia_clear_sky_1000[k] = clear_sky[i-k]
+        resumo_evento_data_1000[j-1] = data[i]
+        resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
+        resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
+        resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
+        resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
+        resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
+        evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
+        j += 1
+    if 3 < temp_over_1000_auxx[i] <= 4:
+        cont_1000_4 += 1
+        for k in range(int(temp_over_1000_auxx[i])):
+            valor_1000_4[i-k] = over_irradiance_1000[i-k]
+            evento_auxxx[k] = over_irradiance_1000[i-k]
+            energia_clear_sky_1000[k] = clear_sky[i-k]
+        resumo_evento_data_1000[j-1] = data[i]
+        resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
+        resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
+        resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
+        resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
+        resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
+        evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
+        j += 1
+    if 4 < temp_over_1000_auxx[i]:
+        cont_1000_5 += 1
+        for k in range(int(temp_over_1000_auxx[i])):
+            valor_1000_5[i-k] = over_irradiance_1000[i-k]
+            evento_auxxx[k] = over_irradiance_1000[i-k]
+            energia_clear_sky_1000[k] = clear_sky[i-k]
+        resumo_evento_data_1000[j-1] = data[i]
+        resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
+        resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
+        resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
+        resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
+        resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
+        evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
+        j += 1
 
 data_resumo_evento = {
     'mean_irradiance': resumo_evento_1000[:, 0],
@@ -289,3 +281,4 @@ print(aux_1000[:15])
 
 aux_1000.to_excel('Eventos_duracao.xlsx')
 # %%
+
