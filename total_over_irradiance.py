@@ -16,8 +16,6 @@ raw_rad = pd.read_excel(arquivo, skiprows=1444, header=None)
 #raw_met = pd.read_excel(arquivo, skiprows=3)
 dados = pd.read_excel('RN01-2024-05_VarRAD.xlsx')
 # %%
-print("OLA MUNDO")
-# %%
 col = 15
 
 data = raw_rad.iloc[:, 0]
@@ -140,8 +138,6 @@ for i in range(n):
         k += 1
 
 # %%
-over_irradiance_1000[~np.isnan(over_irradiance_1000)]
-# %%
 #############################################
 
 k = 0
@@ -187,10 +183,6 @@ energia_clear_sky_1000 = np.full(n, np.nan)
 j = 1
 
 # %%
-temp_over_1000_auxx[~np.isnan(temp_over_1000_auxx)]
-# %%
-
-# %%
 over_irradiance_1000
 # %%
 for i in range(n):
@@ -201,8 +193,6 @@ for i in range(n):
             valor_1000_1[i-k] = over_irradiance_1000[i-k]
             evento_auxxx[k-1] = over_irradiance_1000[i-k]
             energia_clear_sky_1000[k-1] = clear_sky[i-k]
-        print(evento_auxxx[~np.isnan(evento_auxxx)])
-
         resumo_evento_data_1000[j-1] = data[i]
         resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
         resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
@@ -210,7 +200,6 @@ for i in range(n):
         resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
         resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
         #evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
-        # 7
         j += 1
     if 1 < temp_over_1000_auxx[i] <= 2:
         cont_1000_2 += 1
@@ -220,13 +209,11 @@ for i in range(n):
             energia_clear_sky_1000[k-1] = clear_sky[i-k]
         resumo_evento_data_1000[j-1] = data[i]
         resumo_evento_1000[j-1, 0] = np.nanmean(evento_auxxx)
-        print(evento_auxxx[~np.isnan(evento_auxxx)])
         resumo_evento_1000[j-1, 1] = np.nanmax(evento_auxxx)
         resumo_evento_1000[j-1, 2] = temp_over_1000_auxx[i]
         resumo_evento_1000[j-1, 3] = (np.nanmean(evento_auxxx) * temp_over_1000_auxx[i]) / 60
         resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
         evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
-        print("Entrou aqui")
         j += 1
     if 2 < temp_over_1000_auxx[i] <= 3:
         cont_1000_3 += 1
@@ -270,7 +257,6 @@ for i in range(n):
         resumo_evento_1000[j-1, 4] = (np.nanmean(energia_clear_sky_1000) * temp_over_1000_auxx[i]) / 60
         evento_auxxx[:int(temp_over_1000_auxx[i])] = np.nan
         j += 1
-
 
 data_resumo_evento = {
     'mean_irradiance': resumo_evento_1000[:, 0],
@@ -540,34 +526,46 @@ for i in range(n):
         hora_max = data[i]
         break
 
-energia = pd.concat([energia_1000, energia_1367], axis=0, ignore_index=True)
+energia1 = energia_1000.copy()
+energia2 = energia_1367.copy()
 
-print(energia.head())
+#energia1 = pd.DataFrame(energia_1000, columns=['hora', 'energia'])
+energia2 = pd.DataFrame(energia_1367, columns=['hora', 'energia'])
+
+energia = pd.concat([energia1, energia2], axis=0, ignore_index=True)
+
+print(energia.shape)
 
 # %%
-energia_1367
+energia_1000
 
 
 # %%
 max_energia_1000 = energia_1000.iloc[:, 1].max()
 max_energia_1367 = energia_1367.iloc[:, 1].max()
-
+# %%
 # Encontrar o máximo global entre os dois valores
 max_energia = max(max_energia_1000, max_energia_1367)
-
-
+max_energia
+# %%
 hora_energia_max = '99'
-
+# %%
 for item in energia:
+    print(item)
     if item[1] == max_energia:
         hora_energia_max = item[0]
         break
+hora_energia_max
+# %%
 
 if maior_temp_1000 > maior_temp_1367:
     hora_duracao = data[data_maior_1000]
 else:
     hora_duracao = data[data_maior_1367]
+# %%
+energia.shape
 
+# %%
 if n_eventos_x > 0:
     dia_maior_evento = int(hora_max[:2])
     dia_maior_duracao = int(hora_duracao[:2])
@@ -668,3 +666,5 @@ plt.show()
 #########################################################
 # TOTAL XPLOT OVER
 
+
+# %%
