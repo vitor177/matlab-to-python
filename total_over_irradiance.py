@@ -180,7 +180,7 @@ cont_1000_4 = 0
 cont_1000_5 = 0
 
 resumo_evento_1000 = np.full((1000, 5), np.nan)
-resumo_evento_data_1000 = [np.nan] * n
+resumo_evento_data_1000 = [np.nan] * 1000
 
 evento_auxxx = np.full(n, np.nan)
 energia_clear_sky_1000 = np.full(n, np.nan)
@@ -295,7 +295,8 @@ aux_1000.columns = ['Data', 'Valor médio do evento > 1000 W/m²', 'Valor máxim
                                  'Duração > 1000 W/m²', 'Energia do evento > 1000 (Wh/m²)', 'Energia de céu claro']
 
 energia_1000 = aux_1000[['Data', 'Energia do evento > 1000 (Wh/m²)']].copy()
-
+# %%
+resumo_evento_data_1000.shape
 
 
 # %%
@@ -539,9 +540,12 @@ for i in range(n):
         hora_max = data[i]
         break
 
-energia = np.concatenate([energia_1000[:,1], energia_1367[:,1]])
+energia = pd.concat([energia_1000, energia_1367], axis=0, ignore_index=True)
 
-print(energia.shape)
+print(energia.head())
+
+# %%
+energia_1367
 
 
 # %%
@@ -571,7 +575,8 @@ if n_eventos_x > 0:
 
 # %%
 
-# PLOTAGENS
+###################################### PLOTAGENS
+############## TOTAL XPLOT2
 
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -592,9 +597,6 @@ tamFont = 10
 cor1 = 'blue'
 cor2 = 'k'
 nome_arquivo = arquivo
-
-# %%
-
 
 titulo01 = f"{titulo} do dia 01 ao dia 10 de {mes} de {ano}"
 titulo02 = f"{titulo} do dia 11 ao dia 20 de {mes} de {ano}"
@@ -662,3 +664,7 @@ plt.savefig(f"{nome_arquivo}_{titulo}.png", format='png')
 plt.show()
 
 # %%
+
+#########################################################
+# TOTAL XPLOT OVER
+
