@@ -644,28 +644,34 @@ for i in range(max_dia):
     matxx_dia[aux:auxx, :] = matx_dia
     aux += 24
     auxx += 24
+print("Dia máximo: ", max_dia)
+print(ghi_avg_hora.shape)
 
+# %%
+#np.nanmean(ghi_avg_hora[:744])
+ghi_avg_hora.head()
 
 # %%
 
 # ======= GHI avg Hora =======
 ghi_avg_med = np.full((24), np.nan)
 
-# %%
-print(n1)
-# %%
-ghi_avg_horax = ghi_avg_hora[:n1, np.newaxis].T * matxx_dia
+
+ghi_avg_horax = (np.matmul(ghi_avg_hora[:n1, np.newaxis].T, matxx_dia)).flatten()
 
 # %%
-ghi_avg_horax.shape
+print((matxx_dia.shape))
+
 # %%
 
+
+# %%
 for i in range(24):
     ghi_avg_med[i] = np.nanmean(ghi_avg_horax[:, i])
 
-
 # %%
-print(ghi_avg_med.shape)
+print(ghi_avg_med)
+
 # %%
 # ======= GHI max Hora =======
 ghi_max_med = np.full((24, 1), np.nan)
@@ -684,3 +690,5 @@ GHI_clear_med = np.full((24, 1), np.nan)
 ghi_clear_horax = ghi_clear_hora * matxx_dia
 for i in range(24):
     GHI_clear_med[i] = np.nanmean(ghi_clear_horax[:, i])
+
+# %%
