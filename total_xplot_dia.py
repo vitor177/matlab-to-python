@@ -3,9 +3,9 @@ import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 
-def total_xplot_dia(variavel1, variavel2, variavel3, data, numfigura, 
+def total_xplot_dia(variavel1, variavel2, variavel3, data, num_figura, 
                     titulo, dia, lim_sy=1800, lim_iy=0, und_y='W/m²', tam_font=15, 
-                    var1='Ioh', var2='Clear', var3='GHI', save_file=False, file_prefix='Day_Event'):
+                    var1='Ioh', var2='Clear', var3='GHI', save_file=False, nome_arquivo='Day_Event'):
 
     # Selecionando dados para o dia do evento mais intenso
     start_idx = (dia - 1) * 1440
@@ -48,8 +48,8 @@ def total_xplot_dia(variavel1, variavel2, variavel3, data, numfigura,
 
     # Salvar a figura se especificado
     if save_file:
-        fig.savefig(f'{file_prefix}_{titulo}.pdf', format='pdf')
-        fig.savefig(f'{file_prefix}_{titulo}.png', format='png')
+        fig.savefig(f'{nome_arquivo}_{titulo}.pdf', format='pdf')
+        fig.savefig(f'{nome_arquivo}_{titulo}.png', format='png')
 
     # Mostrar a figura
     plt.show()
