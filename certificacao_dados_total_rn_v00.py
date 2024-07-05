@@ -3,6 +3,7 @@ from total_VarRad import total_VarRad
 #from total_qualidade_ghi import total_qualidade_ghi
 import pandas as pd
 from total_over_irradiance import total_over_irradiance
+from limpeza import limpar_e_mover_arquivos
 
 longitude_ref = -45
 isc = 1367
@@ -24,6 +25,4 @@ dados = total_VarRad(raw_rad, dia_juliano_ref, latitude, longitude, longitude_re
 #m1, n1, o1, p1 = total_qualidade_ghi()
 total_over_irradiance(raw=raw_rad,dados=dados,header=header,col=16,fig=5,dia_final=dia_final,mes=mes,ano=ano,arquivo=arquivo,nome_arquivo=nome_arquivo)
 
-
-
-#print(dados)
+#limpar_e_mover_arquivos('.')

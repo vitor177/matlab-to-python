@@ -61,6 +61,4 @@ def total_xplot2(variavel1, variavel2, data, num_figura, titulo, dia_final, mes,
     plt.savefig(f"{nome_arquivo}_{titulo}.pdf", format='pdf')
     plt.savefig(f"{nome_arquivo}_{titulo}.png", format='png')
 
-    plt.show()
-
 #total_xplot2(over_irradiance_plot, ioh, data, 16, 'Overirradiance Events - GHI', 31, 'May', 2024, 1800, 0, 'W/m²', 10, 'blue', 'k', arquivo)

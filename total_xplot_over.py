@@ -80,5 +80,3 @@ def total_xplot_over(variavel1, variavel2, variavel3, data, num_figura, titulo, 
     fig.savefig(f'{nome_arquivo}_{titulo}_comp.pdf', format='pdf')
     fig.savefig(f'{nome_arquivo}_{titulo}_comp.png', format='png')
 
-    # Mostrar a figura
-    plt.show()

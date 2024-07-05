@@ -5,7 +5,7 @@ import pandas as pd
 
 def total_xplot_dia(variavel1, variavel2, variavel3, data, num_figura, 
                     titulo, dia, lim_sy=1800, lim_iy=0, und_y='W/m²', tam_font=15, 
-                    var1='Ioh', var2='Clear', var3='GHI', save_file=False, nome_arquivo='Day_Event'):
+                    var1='Ioh', var2='Clear', var3='GHI', nome_arquivo='Day_Event'):
 
     # Selecionando dados para o dia do evento mais intenso
     start_idx = (dia - 1) * 1440
@@ -47,12 +47,9 @@ def total_xplot_dia(variavel1, variavel2, variavel3, data, num_figura,
     plt.tight_layout()
 
     # Salvar a figura se especificado
-    if save_file:
-        fig.savefig(f'{nome_arquivo}_{titulo}.pdf', format='pdf')
-        fig.savefig(f'{nome_arquivo}_{titulo}.png', format='png')
 
-    # Mostrar a figura
-    plt.show()
+    fig.savefig(f'{nome_arquivo}_{titulo}.pdf', format='pdf')
+    fig.savefig(f'{nome_arquivo}_{titulo}.png', format='png')
 
 # Exemplo de uso:
 # plot_day_event(Variavel1, Variavel2, Variavel3, data, NumFigura, titulo, dia, limSY, limIY, undY, tamFont, var1, var2, var3)
