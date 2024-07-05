@@ -18,7 +18,7 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
     # ======= Informações dos dados brutos =======
 
     #raw_met = pd.read_excel(arquivo, skiprows=3)
-    dados = pd.read_excel('RN01-2024-05_VarRAD.xlsx')
+    #dados = pd.read_excel('RN01-2024-05_VarRAD.xlsx')
     # %%
     col = 15
 
@@ -192,7 +192,6 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
     for i in range(n):
         if 0 < temp_over_1000_auxx[i] <= 1:
             cont_1000_1 += 1
-            print(len(temp_over_1000_auxx))
             for k in range(1,int(temp_over_1000_auxx[i])+1):
                 valor_1000_1[i-k] = over_irradiance_1000[i-k]
                 evento_auxxx[k-1] = over_irradiance_1000[i-k]
@@ -292,8 +291,7 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
     # %%
     #print(np.where(~np.isnan(aux_1000['Valor máximo do evento > 1000 W/m²'])))
     # %%
-
-    aux_1000.to_excel('Eventos_duracao.xlsx', index=False)
+    #aux_1000.to_excel(nome, index=False)
     # %%
 
     std_1000_1 = np.nanmean(valor_1000_1)
@@ -495,8 +493,9 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
     # %%
 
     # Concatenando aux_1000 com aux_1367
+    
     aux_final = pd.concat([aux_1000,aux_1367], axis=1)
-    nome = f'Eventos_duracao.xlsx'
+    nome = f"{nome_arquivo}-{arquivo} - Eventos_duracao.xlsx"
     pd.DataFrame(aux_final).to_excel(nome, index=False)
 
     # Cálculo de médias e máximos
@@ -539,9 +538,6 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
     #energia2 = pd.DataFrame(energia_1367, columns=['hora', 'energia'])
 
     energia = pd.concat([energia1, energia2], axis=0, ignore_index=True)
-
-    print(energia.shape)
-
     # %%
 
 
@@ -556,8 +552,8 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
     hora_energia_max = '99'
     # %%
     for index, row in energia.iterrows():
-        if row[1] == max_energia:
-            hora_energia_max = row[0]
+        if row.iloc[1] == max_energia:
+            hora_energia_max = row.iloc[0]
             break
     hora_energia_max
     # %%
@@ -624,3 +620,159 @@ def total_over_irradiance(raw, dados, header, col, fig, dia_final, mes, ano, arq
 
 
     # %%
+
+# Assumindo que as variáveis estão previamente definidas
+
+# Total de eventos
+    cont_tot = quantidade_eventos_1367 + quantidade_eventos_1000
+
+    # Contagens por intervalo de tempo
+    cont_tot_1 = cont_1000_1 + cont_1367_1
+    cont_tot_2 = cont_1000_2 + cont_1367_2
+    cont_tot_3 = cont_1000_3 + cont_1367_3
+    cont_tot_4 = cont_1000_4 + cont_1367_4
+    cont_tot_5 = cont_1000_5 + cont_1367_5
+
+    cont_1000_1p = cont_1000_1 / cont_tot_1 if cont_tot_1 != 0 else np.nan
+    cont_1000_2p = cont_1000_2 / cont_tot_2 if cont_tot_2 != 0 else np.nan
+    cont_1000_3p = cont_1000_3 / cont_tot_3 if cont_tot_3 != 0 else np.nan
+    cont_1000_4p = cont_1000_4 / cont_tot_4 if cont_tot_4 != 0 else np.nan
+    cont_1000_5p = cont_1000_5 / cont_tot_5 if cont_tot_5 != 0 else np.nan
+    cont_tot_1000_p = quantidade_eventos_1000 / cont_tot if cont_tot != 0 else np.nan
+
+    cont_1367_1p = cont_1367_1 / cont_tot_1 if cont_tot_1 != 0 else np.nan
+    cont_1367_2p = cont_1367_2 / cont_tot_2 if cont_tot_2 != 0 else np.nan
+    cont_1367_3p = cont_1367_3 / cont_tot_3 if cont_tot_3 != 0 else np.nan
+    cont_1367_4p = cont_1367_4 / cont_tot_4 if cont_tot_4 != 0 else np.nan
+    cont_1367_5p = cont_1367_5 / cont_tot_5 if cont_tot_5 != 0 else np.nan
+    cont_tot_1367_p = quantidade_eventos_1367 / cont_tot if cont_tot != 0 else np.nan
+
+
+    # Matriz de informações (6x17) inicializada com NaNs
+    p = np.full((1000, 1000), np.nan, dtype=object)
+
+    # Populando a matriz p
+    p[0, 0] = cont_tot_1
+    p[1, 0] = cont_tot_2
+    p[2, 0] = cont_tot_3
+    p[3, 0] = cont_tot_4
+    p[4, 0] = cont_tot_5
+    p[5, 0] = cont_tot
+
+    p[0, 1] = cont_1000_1
+    p[1, 1] = cont_1000_2
+    p[2, 1] = cont_1000_3
+    p[3, 1] = cont_1000_4
+    p[4, 1] = cont_1000_5
+    p[5, 1] = quantidade_eventos_1000
+
+    p[0, 2] = cont_1000_1p
+    p[1, 2] = cont_1000_2p
+    p[2, 2] = cont_1000_3p
+    p[3, 2] = cont_1000_4p
+    p[4, 2] = cont_1000_5p
+    p[5, 2] = cont_tot_1000_p
+
+    p[0, 3] = cont_1367_1
+    p[1, 3] = cont_1367_2
+    p[2, 3] = cont_1367_3
+    p[3, 3] = cont_1367_4
+    p[4, 3] = cont_1367_5
+    p[5, 3] = quantidade_eventos_1367
+
+    p[0, 4] = cont_1367_1p
+    p[1, 4] = cont_1367_2p
+    p[2, 4] = cont_1367_3p
+    p[3, 4] = cont_1367_4p
+    p[4, 4] = cont_1367_5p
+    p[5, 4] = cont_tot_1367_p
+
+    p[0, 5] = std_1000_1
+    p[1, 5] = std_1000_2
+    p[2, 5] = std_1000_3
+    p[3, 5] = std_1000_4
+    p[4, 5] = std_1000_5
+
+    p[0, 6] = max_1000_1
+    p[1, 6] = max_1000_2
+    p[2, 6] = max_1000_3
+    p[3, 6] = max_1000_4
+    p[4, 6] = max_1000_5
+
+    p[0, 7] = std_1367_1
+    p[1, 7] = std_1367_2
+    p[2, 7] = std_1367_3
+    p[3, 7] = std_1367_4
+    p[4, 7] = std_1367_5
+
+    p[0, 8] = max_1367_1
+    p[1, 8] = max_1367_2
+    p[2, 8] = max_1367_3
+    p[3, 8] = max_1367_4
+    p[4, 8] = max_1367_5
+
+    if maior_temp_1000 > maior_temp_1367:
+        p[1, 11] = maior_temp_1000
+        p[2, 11] = medio_maior_evento_1000
+        p[3, 11] = max_maior_evento_1000
+    else:
+        p[1, 11] = maior_temp_1367
+        p[2, 11] = medio_maior_evento_1367
+        p[3, 11] = max_maior_evento_1367
+
+    p[1, 12] = maior_temp_1000
+    p[2, 12] = medio_maior_evento_1000
+    p[3, 12] = max_maior_evento_1000
+
+    p[1, 13] = maior_temp_1367
+    p[2, 13] = medio_maior_evento_1367
+    p[3, 13] = max_maior_evento_1367
+
+    p[0, 16] = max_over
+    p[0, 18] = max_energia
+
+    # %%
+
+    # %%
+
+    p[0][12] = np.datetime64(data[data_maior_1000])
+    p[0][13] = np.datetime64(data[data_maior_1367])
+    p[0][15] = np.datetime64(hora_max)
+    p[0][17] = np.datetime64(hora_energia_max)
+
+    if maior_temp_1000 > maior_temp_1367:
+        p[0][11] = np.datetime64(data[data_maior_1000])
+    else:
+        p[0][11] = np.datetime64(data[data_maior_1367])
+
+    p[0][10] = 'Evento de maior duração'
+    p[1][10] = 'Tempo do evento de maior duração (min)'
+    p[2][10] = 'Valor médio da GHI do evento de maior duração (W/m²)'
+    p[3][10] = 'Valor máximo da GHI do evento de maior duração (W/m²)'
+
+
+    # %%
+
+
+    # %%
+    # AUXX e AUX
+    auxx = [['Qt. eventos -  < 1 minuto'], ['Qt. eventos -  2 minutos'], ['Qt. eventos -  3 minutos'],
+            ['Qt. eventos - 4 minutos'], ['Qt. eventos -  > 5 minutos'], ['Total']]
+    auxx = [auxx[i] + [p[i][j] for j in range(len(p[0]))] for i in range(len(auxx))]
+
+    aux = [['Tempo', 'Total de eventos', 'Quant de eventos >= 1000 e < 1367 W/m²', 'Quant de eventos >= 1000 e < 1367 (%)',
+            'Qt. de eventos  > 1367  W/m²', 'Qt. de eventos  > 1367  (%)', 'Valor médio da GHI dos eventos >1000 e <1367 (W/m²)',
+            'Valor máximo da GHI dos eventos >1000 e <1367 (W/m²)', 'Valor médio da GHI dos eventos >1367(W/m²)',
+            'Valor máximo da GHI dos eventos >1367 (W/m²)', '', '', 'Maior duração de evento',
+            'Maior duração de evento >1000 e <1367', 'Maior duração de evento >1367', '', 'Hora/Dia do maior evento',
+            'Valor do maior evento em W/m²', 'Hora/Dia do evento de maior energia', 'Valor da energia do maior evento Wh/m²']]
+    aux.extend(auxx)
+
+    # Salvando no Excel
+    #nome = f"{nome_arquivo}-{arquivo} - Eventos_info.xlsx"
+    df = pd.DataFrame(aux)
+    #df.to_excel(nome, index=False, header=False)
+    
+    nome = f"{nome_arquivo}-{arquivo} - Eventos_info.xlsx"
+    pd.DataFrame(df).to_excel(nome, index=False)
+
