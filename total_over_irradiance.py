@@ -1,6 +1,6 @@
 # %%
 #function [P] = TOTAL_over_irradiance(RAW,DADOS,header,col,fig,dia_final,mes,ano,Arquivo,Nome_Arquivo)
-
+from total_xplot_dia import total_xplot_dia
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -529,15 +529,16 @@ for i in range(n):
 energia1 = energia_1000.copy()
 energia2 = energia_1367.copy()
 
+energia1.columns = ['hora', 'energia']
+energia2.columns = ['hora', 'energia']
 #energia1 = pd.DataFrame(energia_1000, columns=['hora', 'energia'])
-energia2 = pd.DataFrame(energia_1367, columns=['hora', 'energia'])
+#energia2 = pd.DataFrame(energia_1367, columns=['hora', 'energia'])
 
 energia = pd.concat([energia1, energia2], axis=0, ignore_index=True)
 
 print(energia.shape)
 
 # %%
-energia_1000
 
 
 # %%
@@ -550,10 +551,9 @@ max_energia
 # %%
 hora_energia_max = '99'
 # %%
-for item in energia:
-    print(item)
-    if item[1] == max_energia:
-        hora_energia_max = item[0]
+for index, row in energia.iterrows():
+    if row[1] == max_energia:
+        hora_energia_max = row[0]
         break
 hora_energia_max
 # %%
@@ -567,9 +567,10 @@ energia.shape
 
 # %%
 if n_eventos_x > 0:
-    dia_maior_evento = int(hora_max[:2])
-    dia_maior_duracao = int(hora_duracao[:2])
-    dia_maior_energia = int(hora_energia_max[:2])
+    dia_maior_evento = int(str(hora_max)[8:10])
+    dia_maior_duracao = int(str(hora_duracao)[8:10])
+    dia_maior_energia = int(str(hora_energia_max)[8:10])
+# %%
 
 # %%
 
@@ -666,5 +667,116 @@ plt.show()
 #########################################################
 # TOTAL XPLOT OVER
 
+
+# %%
+
+#TOTAL_Xplot_over(Ioh,clear_sky,GHI_avg,data,fig+1,'Measured GHI, 
+#Clear Sky and Extraterrestrial ',dia_final,mes,ano,1800,0,'W/m²',10,'Ioh',
+#'Clear','GHI',Nome_Arquivo)
+
+Variavel1 = ioh
+Variavel2 = clear_sky
+Variavel3 = ghi_avg
+data = data
+NumFigura = 17
+titulo = 'Measured GHI Clear Sky and Extraterrestrial'
+dia_final = 31
+mes = 'May'
+ano = 2024
+lim_sy = 1800
+lim_iy = 0
+und_y = 'W/m²'
+tam_font = 10
+var1 = 'Ioh'
+var2 = 'Clear'
+var3 = 'GHI'
+nome_arquivo = nome_arquivo
+
+# Títulos dos subplots
+titulo01 = f'{titulo} (01 a 10 de {mes} de {ano})'
+titulo02 = f'{titulo} (11 a 20 de {mes} de {ano})'
+titulo03 = f'{titulo} (21 a {dia_final} de {mes} de {ano})'
+
+cor1 = 'k'
+cor2 = 'b'
+cor3 = 'r'
+
+# Dividindo os dados em três partes
+datap1 = data[:14400]
+datap2 = data[14400:28800]
+datap3 = data[28800:]
+
+variavelp1 = Variavel1[:14400]
+variavelp2 = Variavel1[14400:28800]
+variavelp3 = Variavel1[28800:]
+
+variavel2p1 = Variavel2[:14400]
+variavel2p2 = Variavel2[14400:28800]
+variavel2p3 = Variavel2[28800:]
+
+variavel3p1 = Variavel3[:14400]
+variavel3p2 = Variavel3[14400:28800]
+variavel3p3 = Variavel3[28800:]
+
+# Criação da figura e subplots
+fig, axs = plt.subplots(3, 1, figsize=(12, 6))
+fig.suptitle(titulo, fontsize=tam_font)
+
+# Primeiro subplot
+axs[0].plot(datap1, variavelp1, color=cor1)
+axs[0].plot(datap1, variavel2p1, color=cor2)
+axs[0].plot(datap1, variavel3p1, color=cor3)
+axs[0].set_title(titulo01, fontsize=tam_font)
+axs[0].grid(True, which='both', linestyle='--', linewidth=0.5)
+axs[0].set_ylim([lim_iy, lim_sy])
+axs[0].set_ylabel(und_y)
+axs[0].legend([var1, var2, var3], loc='upper right', ncol=3)
+axs[0].tick_params(axis='both', which='major', labelsize=tam_font)
+axs[0].tick_params(axis='both', which='minor', labelsize=tam_font)
+axs[0].xaxis.set_major_formatter(day_format)
+
+
+# Segundo subplot
+axs[1].plot(datap2, variavelp2, color=cor1)
+axs[1].plot(datap2, variavel2p2, color=cor2)
+axs[1].plot(datap2, variavel3p2, color=cor3)
+axs[1].set_title(titulo02, fontsize=tam_font)
+axs[1].grid(True, which='both', linestyle='--', linewidth=0.5)
+axs[1].set_ylim([lim_iy, lim_sy])
+axs[1].set_ylabel(und_y)
+axs[1].legend([var1, var2, var3], loc='upper right', ncol=3)
+axs[1].tick_params(axis='both', which='major', labelsize=tam_font)
+axs[1].tick_params(axis='both', which='minor', labelsize=tam_font)
+axs[1].xaxis.set_major_formatter(day_format)
+
+
+# Terceiro subplot
+axs[2].plot(datap3, variavelp3, color=cor1)
+axs[2].plot(datap3, variavel2p3, color=cor2)
+axs[2].plot(datap3, variavel3p3, color=cor3)
+axs[2].set_title(titulo03, fontsize=tam_font)
+axs[2].grid(True, which='both', linestyle='--', linewidth=0.5)
+axs[2].set_ylim([lim_iy, lim_sy])
+axs[2].set_ylabel(und_y)
+axs[2].legend([var1, var2, var3], loc='upper right', ncol=3)
+axs[2].tick_params(axis='both', which='major', labelsize=tam_font)
+axs[2].tick_params(axis='both', which='minor', labelsize=tam_font)
+axs[2].xaxis.set_major_formatter(day_format)
+
+
+# Ajustar layout
+plt.tight_layout(rect=[0, 0, 1, 0.97])
+
+# Salvar a figura em PDF e PNG
+fig.savefig(f'{titulo}_comp.pdf', format='pdf')
+fig.savefig(f'{titulo}_comp.png', format='png')
+
+# Mostrar a figura
+plt.show()
+# %%
+total_xplot_dia(variavel1=ioh, variavel2=clear_sky, variavel3=ghi_avg, 
+                data=data, numfigura=18, titulo='Day of the most intense event ', 
+                dia=dia_maior_evento, lim_sy=1800, lim_iy=0, und_y='W/m²', 
+                tam_font=15, var1='Ioh', var2='Clear', var3='GHI')
 
 # %%
