@@ -4,4 +4,6 @@ python certificacao_dados_total_rn_v00.py
 
 Arquivo principal: certificacao_dados_total_rn_v00.py
 
-Tradução do script de Alan de matlab para python
+Tradução do script de Alan de matlab para python 
+
+OBS: Versão 01 
